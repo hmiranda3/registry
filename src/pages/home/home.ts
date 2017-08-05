@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, AlertController, ActionSheetController } from 'ionic-angular';
 import { AngularFireModule } from 'angularFire2';
 import { FirebaseListObservable, AngularFireDatabaseModule, AngularFireDatabase } from 'angularfire2/database';
+import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 
 @Component({
   selector: 'page-home',
@@ -13,7 +14,7 @@ export class HomePage {
 
   songs: FirebaseListObservable<any>;
 
-  constructor(public navCtrl: NavController, public alertCtrl: AlertController, af: AngularFireDatabase, public actionSheetCtrl: ActionSheetController) {
+  constructor(public navCtrl: NavController, public alertCtrl: AlertController, af: AngularFireDatabase, public actionSheetCtrl: ActionSheetController, private barcodeScanner: BarcodeScanner) {
     this.songs = af.list('/songs');
   }
 
@@ -107,6 +108,14 @@ export class HomePage {
       ]
     });
     prompt.present();
+  }
+
+  scanItem() {
+    this.barcodeScanner.scan().then((barcodeData) => {
+    // Success! Barcode data is here
+    }, (err) => {
+    // An error occurred
+    });
   }
 
 }
