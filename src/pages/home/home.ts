@@ -13,55 +13,57 @@ import { BarcodeScanner } from '@ionic-native/barcode-scanner';
 export class HomePage {
 
   songs: FirebaseListObservable<any>;
+  items: FirebaseListObservable<any>;
 
   constructor(public navCtrl: NavController, public alertCtrl: AlertController, af: AngularFireDatabase, public actionSheetCtrl: ActionSheetController, private barcodeScanner: BarcodeScanner) {
     this.songs = af.list('/songs');
+    this.items = af.list('/items');
   }
 
-  addSong(){
+  addItem() {
     let prompt = this.alertCtrl.create({
-      title: 'Song Name',
-      message: "Enter a name for this new song you're so keen on adding",
+      title: 'Item Name',
+      message: "Enter a name for the item you wish to add.",
       inputs: [
         {
-          name: 'title',
-          placeholder: 'Title'
+          name: 'name',
+          placeholder: 'Name'
         },
       ],
       buttons: [
         {
           text: 'Cancel',
           handler: data => {
-            console.log('Cancel clicked');
+
           }
         },
         {
           text: 'Save',
           handler: data => {
-            this.songs.push({
-              title: data.title
+            this.items.push({
+              name: data.name
             });
           }
         }
       ]
-    });
+    })
     prompt.present();
   }
 
-  showOptions(songId, songTitle) {
+  showOptions(itemId, itemName) {
     let actionSheet = this.actionSheetCtrl.create({
       title: 'What do you want to do?',
       buttons: [
         {
-          text: 'Delete Song',
+          text: 'Delete Item',
           role: 'destructive',
           handler: () => {
-            this.removeSong(songId);
+            this.removeItem(itemId);
           }
         },{
-          text: 'Update title',
+          text: 'Update name',
           handler: () => {
-            this.updateSong(songId, songTitle);
+            this.updateSong(itemId, itemName);
           }
         },{
           text: 'Cancel',
@@ -75,19 +77,19 @@ export class HomePage {
     actionSheet.present();
   }
 
-  removeSong(songId: string) {
-    this.songs.remove(songId);
+  removeItem(itemId: string) {
+    this.items.remove(itemId);
   }
 
-  updateSong(songId, songTitle){
+  updateSong(itemId, itemName){
     let prompt = this.alertCtrl.create({
-      title: 'Song Name',
-      message: "Update the name for this song",
+      title: 'Item Name',
+      message: "Update the name for this item",
       inputs: [
         {
-          name: 'title',
-          placeholder: 'Title',
-          value: songTitle
+          name: 'name',
+          placeholder: 'Name',
+          value: itemName
         },
       ],
       buttons: [
@@ -100,8 +102,8 @@ export class HomePage {
         {
           text: 'Save',
           handler: data => {
-            this.songs.update(songId, {
-              title: data.title
+            this.items.update(itemId, {
+              name: data.name
             });
           }
         }
@@ -112,9 +114,12 @@ export class HomePage {
 
   scanItem() {
     this.barcodeScanner.scan().then((barcodeData) => {
-    // Success! Barcode data is here
+      this.items.push({
+              name: barcodeData.text
+            });
+      alert("You successfully scaned an Item. The Barcode Data is: " + barcodeData.text);
     }, (err) => {
-    // An error occurred
+      alert("Could not scann this barcode. Please try again or make sure it's a valid barcode.");
     });
   }
 

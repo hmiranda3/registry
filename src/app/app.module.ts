@@ -9,7 +9,9 @@ import { HomePage } from '../pages/home/home';
 
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from "angularfire2/database";
-import { AngularFireAuthModule, AngularFireAuth } from 'angularfire2/auth';
+import { BarcodeScanner } from "@ionic-native/barcode-scanner";
+
+
 
 export const firebaseConfig = {
   apiKey: "AIzaSyAh6JjolaF3HuqOG_i8kKRpMWRhAxYNeqY",
@@ -30,7 +32,7 @@ export const firebaseConfig = {
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFireDatabaseModule,
-    AngularFireAuthModule
+    // AngularFireAuthModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -40,6 +42,7 @@ export const firebaseConfig = {
   providers: [
     StatusBar,
     SplashScreen,
+    BarcodeScanner,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
